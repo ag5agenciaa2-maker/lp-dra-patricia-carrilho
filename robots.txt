@@ -3,8 +3,9 @@ Allow: /
 Disallow: /Docs/
 Disallow: /docs/
 
+Sitemap: http://www.patriciacarrilhoadvogada.ag5agencia.site/sitemap.xml
+
 # LLMs: http://www.patriciacarrilhoadvogada.ag5agencia.site/llms.txt
-# (URL pendente de confirmação do dominio final do site)
 
 User-agent: GPTBot
 Allow: /
