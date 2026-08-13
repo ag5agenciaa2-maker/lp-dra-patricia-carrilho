@@ -3,7 +3,7 @@ Allow: /
 Disallow: /Docs/
 Disallow: /docs/
 
-# LLMs: https://www.patriciacarrilhoadvogada.com.br/llms.txt
+# LLMs: http://www.patriciacarrilhoadvogada.ag5agencia.site/llms.txt
 # (URL pendente de confirmação do dominio final do site)
 
 User-agent: GPTBot
