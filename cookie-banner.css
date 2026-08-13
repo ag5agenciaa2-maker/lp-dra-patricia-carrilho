@@ -161,21 +161,23 @@
 }
 
 /* Outline — Borda sutil */
+/* Accessibility fix: contraste WCAG 4.5:1 — opacidade elevada de 0.38 para 0.78 */
 .ck-btn--outline {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.78);
 }
 
 .ck-btn--outline:hover {
-    border-color: rgba(255, 255, 255, 0.28);
-    color: rgba(255, 255, 255, 0.65);
+    border-color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.95);
 }
 
 /* Ghost — Link underline */
+/* Accessibility fix: contraste WCAG 4.5:1 — opacidade elevada de 0.3 para 0.78 */
 .ck-btn--ghost {
     background: transparent;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.78);
     border: none;
     padding: 0.38rem 0.4rem;
     text-decoration: underline;
@@ -253,6 +255,7 @@
 }
 
 .ck-modal__close {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,11 +263,23 @@
     height: 26px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.55);
+    /* Accessibility fix: contraste WCAG 4.5:1 — opacidade elevada de 0.55 para 0.82 */
+    color: rgba(255, 255, 255, 0.82);
     border: none;
     cursor: pointer;
     flex-shrink: 0;
     transition: all .2s ease;
+}
+
+/* Accessibility fix: touch target mínimo 44x44px via pseudo-elemento, sem alterar o visual do botão */
+.ck-modal__close::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
 }
 
 .ck-modal__body {

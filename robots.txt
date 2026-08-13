@@ -2,3 +2,21 @@ User-agent: *
 Allow: /
 Disallow: /Docs/
 Disallow: /docs/
+
+# LLMs: https://www.patriciacarrilhoadvogada.com.br/llms.txt
+# (URL pendente de confirmação do dominio final do site)
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /

@@ -7,9 +7,16 @@
   /* ---------- header: compacta ao rolar ---------- */
   const header = document.getElementById('header');
 
+  /* PageSpeed fix: rAF batching evita forced reflow no scroll listener */
+  let scrollRafPending = false;
   const onScroll = () => {
-    const compact = window.scrollY > 80;
-    header.classList.toggle('is-compact', compact);
+    if (scrollRafPending) return;
+    scrollRafPending = true;
+    requestAnimationFrame(() => {
+      scrollRafPending = false;
+      const compact = window.scrollY > 80;
+      if (header) header.classList.toggle('is-compact', compact);
+    });
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -93,40 +100,55 @@
   }
 
   /* ---------- carrossel de depoimentos (cross-fade) ---------- */
+  /* Bug fix: guarda if(carousel) — #carousel só existe no index.html;
+     sem essa guarda, o script quebrava com TypeError nas páginas de
+     termos/política, interrompendo hambúrguer, drawer e scroll do header nelas também. */
   const carousel = document.getElementById('carousel');
-  const items = [...carousel.querySelectorAll('.carousel__item')];
-  const dots = document.getElementById('dots');
-  let current = 0;
-  let timer = null;
+  if (carousel) {
+    const items = [...carousel.querySelectorAll('.carousel__item')];
+    const dots = document.getElementById('dots');
+    const carouselPrev = document.getElementById('carouselPrev');
+    const carouselNext = document.getElementById('carouselNext');
+    const carouselProgress = document.getElementById('carouselProgress');
+    let current = 0;
+    let timer = null;
 
-  items.forEach((_, i) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.setAttribute('role', 'tab');
-    b.setAttribute('aria-label', `Depoimento ${i + 1}`);
-    if (i === 0) b.classList.add('is-on');
-    b.addEventListener('click', () => { show(i); restart(); });
-    dots.appendChild(b);
-  });
-  const dotEls = [...dots.children];
+    items.forEach((_, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', `Depoimento ${i + 1}`);
+      b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      if (i === 0) b.classList.add('is-on');
+      b.addEventListener('click', () => { show(i); restart(); });
+      dots.appendChild(b);
+    });
+    const dotEls = [...dots.children];
 
-  function show(index) {
-    current = (index + items.length) % items.length;
-    items.forEach((el, i) => el.classList.toggle('is-active', i === current));
-    dotEls.forEach((el, i) => el.classList.toggle('is-on', i === current));
+    function show(index) {
+      current = (index + items.length) % items.length;
+      items.forEach((el, i) => el.classList.toggle('is-active', i === current));
+      dotEls.forEach((el, i) => {
+        el.classList.toggle('is-on', i === current);
+        el.setAttribute('aria-selected', i === current ? 'true' : 'false');
+      });
+      if (carouselProgress) carouselProgress.style.width = `${((current + 1) / items.length) * 100}%`;
+    }
+    function start() {
+      if (reduceMotion) return;
+      timer = setInterval(() => show(current + 1), 6000);
+    }
+    function stop() { clearInterval(timer); timer = null; }
+    function restart() { stop(); start(); }
+
+    carousel.addEventListener('mouseenter', stop);
+    carousel.addEventListener('mouseleave', start);
+    dots.addEventListener('mouseenter', stop);
+    dots.addEventListener('mouseleave', start);
+    if (carouselPrev) carouselPrev.addEventListener('click', () => { show(current - 1); restart(); });
+    if (carouselNext) carouselNext.addEventListener('click', () => { show(current + 1); restart(); });
+    start();
   }
-  function start() {
-    if (reduceMotion) return;
-    timer = setInterval(() => show(current + 1), 6000);
-  }
-  function stop() { clearInterval(timer); timer = null; }
-  function restart() { stop(); start(); }
-
-  carousel.addEventListener('mouseenter', stop);
-  carousel.addEventListener('mouseleave', start);
-  dots.addEventListener('mouseenter', stop);
-  dots.addEventListener('mouseleave', start);
-  start();
 
   /* ---------- FAQ (cards flip 3D) ---------- */
   const faqCards = [...document.querySelectorAll('.faq-flip__card')];
