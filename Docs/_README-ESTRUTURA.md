@@ -46,7 +46,7 @@ páginas existentes.
 - CSS do cookie banner: `{{BASE}}cookie-banner.css`
 - Script principal: `{{BASE}}script.js`
 - Script do cookie banner: `{{BASE}}cookie-banner.js`
-- Favicon: `{{BASE}}Assets/favicon-patricia-carrilho-advogada.webp`
+- Favicon: `{{BASE}}Assets/favicon-patricia-carrilho-advogada.png` (+ `.ico` legado)
 
 Links de âncora da home a partir de uma página secundária usam `{{BASE}}index.html#secao`
 (ex.: `index.html#servicos`). Dentro do próprio `index.html`, usa-se apenas `#servicos`.
@@ -64,31 +64,23 @@ Links de âncora da home a partir de uma página secundária usam `{{BASE}}index
 - [ ] Botão flutuante do WhatsApp (`.wa-premium-container`) — presente no index e replicado
       nas páginas legais nesta sincronização
 - [ ] `script.js` linkado no final do `<body>`, DEPOIS de `cookie-banner.js`
-- [ ] Favicon `<link rel="icon" href="{{BASE}}Assets/favicon-patricia-carrilho-advogada.webp" type="image/webp" />`
+- [ ] Favicon `<link rel="icon" href="{{BASE}}Assets/favicon-patricia-carrilho-advogada.png" type="image/png" />`
 - [ ] `<meta charset="UTF-8" />` e `<meta name="viewport" content="width=device-width, initial-scale=1" />`
 - [ ] `<link rel="stylesheet" href="{{BASE}}style.css" />`
-- [ ] `<link rel="canonical" ...>` apontando para a URL real da página (domínio final ainda não
-      confirmado — ver aviso no `<head>` do `index.html`)
+- [ ] `<link rel="canonical" ...>` apontando para a URL real da página, sempre no domínio
+      oficial `https://patriciacarrilhoadv.com.br` (sem `www`, sempre HTTPS)
 
 ---
 
 ## 5. Armadilhas conhecidas do projeto
 
-1. **`script.js` quebra em páginas sem `#carousel` de depoimentos (bug real, não corrigido nesta
-   sincronização por estar fora do escopo de nav/footer).**
-   Em `script.js`, o bloco do carrossel de depoimentos faz:
-   ```js
-   const carousel = document.getElementById('carousel');
-   const items = [...carousel.querySelectorAll('.carousel__item')];
-   ```
-   sem guarda de `if (carousel)` — diferente do carrossel "sobre" (`aboutCarousel`), que tem a
-   guarda correta (`if (aboutCarousel) { ... }`). Como `#carousel` só existe no `index.html`
-   (seção Depoimentos), em `termos-e-condicoes.html` e `politica-de-privacidade.html` essa linha
-   lança `TypeError: Cannot read properties of null` e **interrompe todo o restante da IIFE**,
-   incluindo o efeito de scroll do header, o hamburger/drawer mobile e o widget do WhatsApp.
-   **Correção recomendada (não aplicada aqui por estar fora do escopo desta skill):** envolver o
-   bloco do carrossel de depoimentos com `if (carousel) { ... }`, no mesmo padrão já usado no
-   carrossel "sobre".
+1. **Todo bloco de `script.js` que depende de um elemento exclusivo do `index.html` precisa de
+   guarda.** `script.js` é o mesmo arquivo nas três páginas. Um `document.getElementById()` que
+   retorna `null` e é usado sem checagem lança `TypeError` e **interrompe todo o restante da
+   IIFE** — quebrando header, hamburger, drawer e reveal-on-scroll nas páginas legais.
+   Já corrigidos com guarda: carrossel de depoimentos (`#carousel`), carrossel "sobre"
+   (`#aboutCarousel`) e formulário de contato (`#form`). Ao adicionar um bloco novo, use o mesmo
+   padrão `if (elemento) { ... }`.
 
 2. **Cuidado ao remover/inserir blocos por edição manual do footer/drawer**: o footer usa
    `.footer__grid` com 4 colunas — se algum `</div>` for perdido no meio da edição, o grid
@@ -99,9 +91,9 @@ Links de âncora da home a partir de uma página secundária usam `{{BASE}}index
    do conteúdo jurídico). Isso é esperado e não deve ser removido — não faz parte do
    nav/footer/cookie, é conteúdo específico da página.
 
-4. **Domínio do site ainda não confirmado**: `index.html` usa
-   `https://www.patriciacarrilhoadvogada.com.br` como placeholder em canonical, OG, Twitter e
-   JSON-LD. Substituir em todas as páginas assim que o domínio real for definido.
+4. **Domínio oficial confirmado**: `https://patriciacarrilhoadv.com.br` (sem `www`, sempre
+   HTTPS). Já aplicado em canonical, OG, Twitter, JSON-LD, `sitemap.xml`, `robots.txt` e
+   `llms.txt`. Toda página nova deve usar esse domínio no `<link rel="canonical">`.
 
 ---
 

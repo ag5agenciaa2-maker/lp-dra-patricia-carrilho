@@ -161,50 +161,55 @@
   });
 
   /* ---------- formulário: validação real ---------- */
+  /* Bug fix: guarda if(form) — #form só existe no index.html; sem ela o
+     script quebrava com TypeError em termos/política, interrompendo o
+     restante da IIFE (mesmo padrão dos carrosséis). */
   const form = document.getElementById('form');
-  const errorBox = document.getElementById('form-error');
-  const okBox = document.getElementById('form-ok');
+  if (form) {
+    const errorBox = document.getElementById('form-error');
+    const okBox = document.getElementById('form-ok');
 
-  const fail = (field, message) => {
-    field.classList.add('is-invalid');
-    errorBox.textContent = message;
-    errorBox.classList.add('is-visible');
-    field.focus();
-    return false;
-  };
+    const fail = (field, message) => {
+      field.classList.add('is-invalid');
+      errorBox.textContent = message;
+      errorBox.classList.add('is-visible');
+      field.focus();
+      return false;
+    };
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const nome = form.nome, tel = form.tel, assunto = form.assunto, msg = form.msg;
-    [nome, tel, msg].forEach((f) => f.classList.remove('is-invalid'));
-    errorBox.classList.remove('is-visible');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = form.nome, tel = form.tel, assunto = form.assunto, msg = form.msg;
+      [nome, tel, msg].forEach((f) => f.classList.remove('is-invalid'));
+      errorBox.classList.remove('is-visible');
 
-    if (nome.value.trim().length < 3) return fail(nome, 'Escreva seu nome completo.');
-    if (tel.value.replace(/\D/g, '').length < 10) return fail(tel, 'Informe um WhatsApp com DDD.');
-    if (msg.value.trim().length < 15) return fail(msg, 'Conte um pouco mais sobre o caso (mínimo 15 caracteres).');
+      if (nome.value.trim().length < 3) return fail(nome, 'Escreva seu nome completo.');
+      if (tel.value.replace(/\D/g, '').length < 10) return fail(tel, 'Informe um WhatsApp com DDD.');
+      if (msg.value.trim().length < 15) return fail(msg, 'Conte um pouco mais sobre o caso (mínimo 15 caracteres).');
 
-    form.classList.add('is-sent');
-    okBox.hidden = false;
+      form.classList.add('is-sent');
+      okBox.hidden = false;
 
-    // ▼ MENSAGEM OBRIGATÓRIA — estrutura fixa (Padrão AG5) ▼
-    let texto = `Olá, me chamo ${nome.value.trim()}, vim através do site e gostaria de uma informação.\n`;
-    texto += `\n- Telefone: ${tel.value.trim()}`;
-    texto += `\n- Assunto: ${assunto.value}`;
-    if (msg.value.trim()) texto += `\n- Seu caso: ${msg.value.trim()}`;
-    // ▲ ────────────────────────────────────────── ▲
+      // ▼ MENSAGEM OBRIGATÓRIA — estrutura fixa (Padrão AG5) ▼
+      let texto = `Olá, me chamo ${nome.value.trim()}, vim através do site e gostaria de uma informação.\n`;
+      texto += `\n- Telefone: ${tel.value.trim()}`;
+      texto += `\n- Assunto: ${assunto.value}`;
+      if (msg.value.trim()) texto += `\n- Seu caso: ${msg.value.trim()}`;
+      // ▲ ────────────────────────────────────────── ▲
 
-    const urlWhatsApp = `https://wa.me/5521992513639?text=${encodeURIComponent(texto)}`;
-    window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
-  });
+      const urlWhatsApp = `https://wa.me/5521992513639?text=${encodeURIComponent(texto)}`;
+      window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
+    });
 
-  /* máscara simples de telefone */
-  form.tel.addEventListener('input', (e) => {
-    const d = e.target.value.replace(/\D/g, '').slice(0, 11);
-    e.target.value = d.length > 10
-      ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
-      : d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
-      : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d;
-  });
+    /* máscara simples de telefone */
+    form.tel.addEventListener('input', (e) => {
+      const d = e.target.value.replace(/\D/g, '').slice(0, 11);
+      e.target.value = d.length > 10
+        ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
+        : d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
+        : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d;
+    });
+  }
 
   /* ---------- carrossel "sobre" (coverflow editorial) ---------- */
   const aboutCarousel = document.getElementById('aboutCarousel');
@@ -253,7 +258,17 @@
   const mainBtn       = document.getElementById('wa-main-btn');
   const targetSection = document.getElementById('servicos');
 
-  if (!bubble || !typing || !realMessage || !closeBtn || !mainBtn || !targetSection) return;
+  // Sem o botão não há nada a fazer (página sem o widget).
+  if (!mainBtn) return;
+
+  /* Bug fix: nas páginas legais não existe #servicos, e o return antecipado deixava
+     o botão flutuante preso em opacity:0/visibility:hidden — ou seja, invisível para
+     sempre. Sem seção-gatilho (ou sem o balão), o botão aparece de imediato e só a
+     timeline do balão é ignorada. */
+  if (!bubble || !typing || !realMessage || !closeBtn || !targetSection) {
+    mainBtn.classList.add('visible');
+    return;
+  }
 
   const DELAY_BALAO            = 25000; // 25s após entrar na seção
   const DURATION_TYPING        = 2500;  // 2.5s de "digitando..."
