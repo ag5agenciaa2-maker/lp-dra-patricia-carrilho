@@ -6,7 +6,7 @@
 
 ## 🔴 CRÍTICOS — Impactam SEO diretamente
 
-- [ ] `url` / `og:url` / `canonical` / `identifier`, `hasMap`, `sameAs[0]` (domínio) — O domínio real do site não está confirmado em nenhum Docs/ nem no HTML (dossiê registra explicitamente "Site próprio: Não possui"). Todo o schema usa o placeholder `https://www.patriciacarrilhoadvogada.com.br/`, marcado com comentário HTML no `<head>` do `index.html`. **Ação necessária:** confirmar o domínio real com o cliente/agência e substituir em: `@id`, `url`, `logo`, `image`, `hasOfferCatalog.provider.@id`, canonical, og:url, og:image, twitter:image.
+- [x] `url` / `og:url` / `canonical` / `identifier`, `hasMap`, `sameAs[0]` (domínio) — **RESOLVIDO em 09/09/2026.** Domínio oficial confirmado: `https://patriciacarrilhoadv.com.br/` (sem `www`, HTTPS). Aplicado em `@id`, `url`, `logo`, `image`, `hasOfferCatalog.provider.@id`, canonical, og:url, og:image, twitter:image, `sitemap.xml`, `robots.txt` e `llms.txt`. O placeholder anterior (`http://www.patriciacarrilhoadvogada.ag5agencia.site/`) não existe mais no código de produção.
 - [ ] `email` — Não encontrado em nenhuma fonte (Docs/Informações-da-Empresa-Raiz.md confirma "❌ Não informado"). Omitido do JSON-LD.
 
 ## 🟡 IMPORTANTES

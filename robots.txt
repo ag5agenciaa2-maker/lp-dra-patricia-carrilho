@@ -3,9 +3,9 @@ Allow: /
 Disallow: /Docs/
 Disallow: /docs/
 
-Sitemap: http://www.patriciacarrilhoadvogada.ag5agencia.site/sitemap.xml
+Sitemap: https://patriciacarrilhoadv.com.br/sitemap.xml
 
-# LLMs: http://www.patriciacarrilhoadvogada.ag5agencia.site/llms.txt
+# LLMs: https://patriciacarrilhoadv.com.br/llms.txt
 
 User-agent: GPTBot
 Allow: /

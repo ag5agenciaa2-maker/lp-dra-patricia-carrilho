@@ -2,6 +2,12 @@
 
 Data: 13/08/2026
 
+> **Atualização — 09/09/2026:** o domínio oficial foi confirmado como
+> `https://patriciacarrilhoadv.com.br/` (sem `www`, sempre HTTPS) e já está aplicado em
+> `index.html` (canonical, Open Graph, Twitter Cards e todo o JSON-LD), `sitemap.xml`,
+> `robots.txt` e `llms.txt`. Todas as pendências de "domínio placeholder" descritas abaixo
+> estão **resolvidas**; o texto original foi mantido como registro histórico da auditoria.
+
 ## 1. O que foi auditado
 
 - `index.html` (arquivo principal), `politica-de-privacidade.html`, `termos-e-condicoes.html`
